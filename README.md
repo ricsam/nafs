@@ -5,6 +5,8 @@ npm install nafs
 yarn add nafs
 ```
 
+### Example
+
 ```js
 const { nafs, expressMiddleware } = require('nafs');
 const express = require('express');
