@@ -1,0 +1,19 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "jsRules": {},
+  "rules": {
+    "no-console": false,
+    "no-submodule-imports": [false],
+    "object-literal-sort-keys": false,
+    "interface-name": false,
+    "interface-over-type-literal": false,
+    "max-classes-per-file": false,
+    "triple-equals": false,
+    "no-shadowed-variable": false
+  },
+  "rulesDirectory": [],
+  "linterOptions": {
+    "exclude": ["prisma/generated/**"]
+  }
+}
