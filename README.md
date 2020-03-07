@@ -29,7 +29,6 @@ app.get('/read', (req, res) => {
     res.send(file);
   });
 });
-
 ```
 
 ### Enable cache for remote data
@@ -37,14 +36,12 @@ app.get('/read', (req, res) => {
 const remoteFs = nafs('s3:///key:secret@us-east-1/bucket_name?cacheDir=/tmp/images');
 
 console.time('hello');
-remoteFs.readFile('/hello').then(() => {
-  console.timeEnd('hello'); /* 70 ms */
-});
+await remoteFs.readFile('/hello')
+console.timeEnd('hello'); /* 70 ms */
+
 /* now cached */
 console.time('hello');
-remoteFs.readFile('/hello').then(() => {
-  console.timeEnd('hello'); /* 2 ms */
-});
-
+await remoteFs.readFile('/hello')
+console.timeEnd('hello'); /* 2 ms */
 ```
 
