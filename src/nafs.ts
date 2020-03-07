@@ -68,7 +68,6 @@ const activeStorageFileServe: NAFSFactory = (url: string) => {
   };
 };
 
-
 const activeStorageS3Serve: NAFSFactory = (url) => {
   let apiKey: string;
   let secret: string;
@@ -76,19 +75,21 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
   let bucket: string;
   let rootPath: string;
   let cacheDir: string | undefined;
+
   let fetchPolicy:
     | 'cache-first'
     | 'cache-and-network'
     | 'network-only'
     | 'cache-only'
     | 'no-cache' = 'cache-first';
+
   const r = url.match(
     /^s3:\/\/([^:]+):([^@]+)@([^/]+)\/([^/?]+)\/?([^?]*)(\?.+)?$/
   );
 
   if (r) {
     let queryParams: string;
-    [, apiKey, secret, region, bucket, rootPath, queryParams] = r;
+    [, apiKey, secret, region, bucket, rootPath = '/', queryParams] = r;
     if (queryParams) {
       ({ cacheDir, fetchPolicy } = queryString.parse(queryParams) as any);
     }
@@ -97,23 +98,27 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
       'Invalid URL, should conform to s3://key:secret@eu-central-1/bucket_name/some/path/in/bucket?cacheDir=/tmp/img_data&fetchPolicy=network-only'
     );
   }
+
   const s3 = new AWS.S3({
     accessKeyId: apiKey,
     secretAccessKey: secret,
     region,
   });
 
+  const getS3Path = (fpath: string) =>
+    path.join(rootPath, fpath).replace(/^\//, '');
+
   const readRemoteStream = (fpath: string) =>
     s3
       .getObject({
         Bucket: bucket,
-        Key: path.join(rootPath, fpath),
+        Key: getS3Path(fpath),
       })
       .createReadStream();
 
   let cachePath: string | undefined;
   if (cacheDir) {
-    cachePath = path.resolve(cacheDir, rootPath);
+    cachePath = path.resolve(path.join(cacheDir, rootPath));
   }
 
   const writeFileToCache = async (fpath: string, body: any) => {
@@ -123,6 +128,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
       return fs.promises.writeFile(cacheFpath, body);
     }
   };
+
   const writeStreamToCache = async (
     fpath: string,
     stream: NodeJS.ReadableStream
@@ -142,6 +148,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
       });
     }
   };
+
   const createReadStream = (fpath: string) => {
     const passStream = new stream.PassThrough();
     if (cachePath) {
@@ -182,6 +189,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
     }
     return passStream;
   };
+
   return {
     readFile: async (fpath) => {
       const stream = createReadStream(fpath);
@@ -193,7 +201,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
         s3
           .putObject({
             Bucket: bucket,
-            Key: path.join(rootPath, fpath),
+            Key: getS3Path(fpath),
             Body: body,
           })
           .promise(),
