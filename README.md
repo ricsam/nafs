@@ -12,7 +12,7 @@ const { nafs, expressMiddleware } = require('nafs');
 const express = require('express');
 
 const localFs = nafs('file:///tmp/dev_storage');
-const remoteFs = nafs('s3:///key:secret@bucket_name/some/path/in/bucket');
+const remoteFs = nafs('s3:///key:secret@us-east-1/bucket_name/some/path');
 
 const app = express();
 
@@ -34,7 +34,7 @@ app.get('/read', (req, res) => {
 
 ### Enable cache for remote data
 ```js
-const remoteFs = nafs('s3:///key:secret@bucket_name/some/path?cacheDir=/tmp/images');
+const remoteFs = nafs('s3:///key:secret@us-east-1/bucket_name?cacheDir=/tmp/images');
 
 console.time('hello');
 remoteFs.readFile('/hello').then(() => {

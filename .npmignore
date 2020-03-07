@@ -2,3 +2,5 @@ example
 dist
 nodemon.json
 tslint.json
+.prettierrc
+.github

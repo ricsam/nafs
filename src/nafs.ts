@@ -83,7 +83,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
     | 'cache-only'
     | 'no-cache' = 'cache-first';
   const r = url.match(
-    /^s3:\/\/([^:]+):([^@]+)@([^/]+)\/([^/]+)\/([^?]+)(\?.+)?$/
+    /^s3:\/\/([^:]+):([^@]+)@([^/]+)\/([^/?]+)\/?([^?]*)(\?.+)?$/
   );
 
   if (r) {
@@ -137,7 +137,6 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
           resolve();
         });
         fstream.once('error', (err) => {
-          console.log('rejecting here');
           reject(err);
         });
       });
