@@ -1,19 +1,24 @@
-import express from 'express';
-import { parse } from 'url';
+import { IncomingMessage, OutgoingMessage } from 'http';
 import * as stream from 'stream';
+import { parse } from 'url';
 
 export const expressMiddleware = (
   createReadStream: (fpath: string) => stream.Readable
-): express.RequestHandler => {
-  return (req, res, next) => {
+) => {
+  return (
+    req: IncomingMessage,
+    res: OutgoingMessage,
+    next: (err?: any) => void
+  ): any => {
     if (req.method !== 'GET' && req.method !== 'HEAD') {
-      res.statusCode = 405;
+      /* exists on express req */
+      (res as any).statusCode = 405;
       res.setHeader('Allow', 'GET, HEAD');
       res.setHeader('Content-Length', '0');
       res.end();
       return;
     }
-    const fpath = parse(req.url).pathname;
+    const fpath = parse(req.url as string).pathname;
 
     if (!fpath) {
       next(new Error('Invalid path'));
