@@ -6,7 +6,7 @@ import { expressMiddleware } from '../src/expressMiddleware';
 import { config } from 'dotenv';
 
 config({
-  path: path.join(__dirname, '.env')
+  path: path.join(__dirname, '.env'),
 });
 
 if (!process.env.AFS_S3) {
@@ -26,7 +26,6 @@ const fetchPolicy:
   | 'no-cache' = 'cache-and-network';
 
 const storageDir = path.join(__dirname, '../testData');
-
 
 const fileAfs = nafs('file://' + storageDir);
 const s3Afs = nafs(
@@ -64,6 +63,14 @@ serves.forEach(([key, { createReadStream, writeFile, readFile }]) => {
       })
       .catch(next);
   });
+  app.get(`/${key}/404`, (req, res, next) => {
+    readFile('/cat-404.jpeg')
+      .then((body: any) => {
+        res.type('jpg');
+        res.send(body);
+      })
+      .catch(next);
+  });
 });
 
 app.get('/', (req, res) => {
@@ -73,6 +80,7 @@ app.get('/', (req, res) => {
         `<a href="/${key}/write/doc">/${key}/write/doc</a>`,
         `<a href="/${key}/write/img">/${key}/write/img</a>`,
         `<a href="/${key}/read/img.jpeg">/${key}/read/img.jpeg</a>`,
+        `<a href="/${key}/404">/${key}/404</a>`,
       ];
     })
     .join('<br />');

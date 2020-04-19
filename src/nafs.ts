@@ -68,6 +68,20 @@ const activeStorageFileServe: NAFSFactory = (url: string) => {
   };
 };
 
+// pass a into b
+const forwardStream = (a: stream.Readable, b: stream.PassThrough) => {
+  a.pipe(b);
+  a.on('close', () => {
+    b.emit('close');
+  });
+  a.on('end', () => {
+    b.emit('end');
+  });
+  a.on('error', (err) => {
+    b.emit('error', err);
+  });
+};
+
 const activeStorageS3Serve: NAFSFactory = (url) => {
   let apiKey: string;
   let secret: string;
@@ -108,13 +122,19 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
   const getS3Path = (fpath: string) =>
     path.join(rootPath, fpath).replace(/^\//, '');
 
-  const readRemoteStream = (fpath: string) =>
-    s3
-      .getObject({
-        Bucket: bucket,
-        Key: getS3Path(fpath),
-      })
-      .createReadStream();
+  const readRemoteStream = (fpath: string) => {
+    try {
+      return s3
+        .getObject({
+          Bucket: bucket,
+          Key: getS3Path(fpath),
+        })
+        .createReadStream();
+    } catch (err) {
+      console.log('Yes');
+    }
+    return new stream.PassThrough();
+  };
 
   let cachePath: string | undefined;
   if (cacheDir) {
@@ -139,12 +159,16 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
       const fstream = fs.createWriteStream(cacheFpath);
       stream.pipe(fstream);
       return new Promise((resolve, reject) => {
+        const onError = (err: any) => {
+          fs.unlink(cacheFpath, () => {
+            reject(err);
+          });
+        };
+        stream.once('error', onError);
         fstream.once('end', () => {
           resolve();
         });
-        fstream.once('error', (err) => {
-          reject(err);
-        });
+        fstream.once('error', onError);
       });
     }
   };
@@ -157,30 +181,36 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
         fs.promises
           .access(cacheFpath)
           .then(() => {
-            fs.createReadStream(cacheFpath).pipe(passStream);
+            forwardStream(fs.createReadStream(cacheFpath), passStream);
           })
-          .catch((err) => {
+          .catch(() => {
             const stream = readRemoteStream(fpath);
-            writeStreamToCache(fpath, stream);
-            stream.pipe(passStream);
+            writeStreamToCache(fpath, stream).catch((err) => {
+              throw err;
+            });
+            forwardStream(stream, passStream);
           });
       } else if (fetchPolicy === 'cache-and-network') {
         const remoteStream = readRemoteStream(fpath);
-        writeStreamToCache(fpath, remoteStream);
+        writeStreamToCache(fpath, remoteStream).catch((err) => {
+          // ignore error here
+        });
         fs.promises
           .access(cacheFpath)
           .then(() => {
-            fs.createReadStream(cacheFpath).pipe(passStream);
+            forwardStream(fs.createReadStream(cacheFpath), passStream);
           })
           .catch((err) => {
-            remoteStream.pipe(passStream);
+            forwardStream(remoteStream, passStream);
           });
       } else if (fetchPolicy === 'cache-only') {
         return fs.createReadStream(cacheFpath);
       } else if (fetchPolicy === 'network-only') {
         const stream = readRemoteStream(fpath);
-        writeStreamToCache(fpath, stream);
-        stream.pipe(passStream);
+        writeStreamToCache(fpath, stream).catch((err) => {
+          // ignore error here
+        });
+        forwardStream(stream, passStream);
       } else if (fetchPolicy === 'no-cache') {
         return readRemoteStream(fpath);
       }
