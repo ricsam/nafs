@@ -123,17 +123,12 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
     path.join(rootPath, fpath).replace(/^\//, '');
 
   const readRemoteStream = (fpath: string) => {
-    try {
-      return s3
-        .getObject({
-          Bucket: bucket,
-          Key: getS3Path(fpath),
-        })
-        .createReadStream();
-    } catch (err) {
-      console.log('Yes');
-    }
-    return new stream.PassThrough();
+    return s3
+      .getObject({
+        Bucket: bucket,
+        Key: getS3Path(fpath),
+      })
+      .createReadStream();
   };
 
   let cachePath: string | undefined;

@@ -16,6 +16,7 @@ export const expressMiddleware = (
       res.setHeader('Allow', 'GET, HEAD');
       res.setHeader('Content-Length', '0');
       res.end();
+      next();
       return;
     }
     const fpath = parse(req.url as string).pathname;
@@ -26,8 +27,15 @@ export const expressMiddleware = (
     }
 
     const stream = createReadStream(fpath);
-    stream.on('error', function error(err) {
-      next(err);
+    stream.once('error', function error(err) {
+      // next(err);
+      if (err.name === 'NoSuchKey') {
+        (res as any).statusCode = 404;
+        res.write('Not found');
+        res.end();
+      } else {
+        next(err);
+      }
     });
     stream.pipe(res);
   };
