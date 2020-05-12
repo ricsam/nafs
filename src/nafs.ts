@@ -9,6 +9,7 @@ type NAFS = {
   writeFile: (fpath: string, body: any) => Promise<any>;
   readFile: (fpath: string) => Promise<Buffer | string>;
   createReadStream: (fpath: string) => stream.Readable;
+  createWriteStream: (fpath: string) => stream.Writable;
 };
 
 type NAFSFactory = (url: string) => NAFS;
@@ -42,6 +43,8 @@ const activeStorageFileServe: NAFSFactory = (url: string) => {
 
   const createReadStream = (fpath: string) =>
     fs.createReadStream(path.join(rootPath, fpath));
+  const createWriteStream = (fpath: string) =>
+    fs.createWriteStream(path.join(rootPath, fpath));
 
   return {
     createReadStream,
@@ -65,6 +68,7 @@ const activeStorageFileServe: NAFSFactory = (url: string) => {
           }
         });
       }),
+    createWriteStream,
   };
 };
 
@@ -215,6 +219,17 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
     return passStream;
   };
 
+  const createWriteStream = (fpath: string) => {
+    const ptStream = new stream.PassThrough();
+    s3.putObject({
+      Bucket: bucket,
+      Key: getS3Path(fpath),
+      Body: ptStream,
+    });
+    writeStreamToCache(fpath, ptStream);
+    return ptStream;
+  };
+
   return {
     readFile: async (fpath) => {
       const stream = createReadStream(fpath);
@@ -233,6 +248,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
       ]);
     },
     createReadStream,
+    createWriteStream,
   };
 };
 
