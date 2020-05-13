@@ -221,7 +221,7 @@ const activeStorageS3Serve: NAFSFactory = (url) => {
 
   const createWriteStream = (fpath: string) => {
     const ptStream = new stream.PassThrough();
-    s3.putObject({
+    s3.upload({
       Bucket: bucket,
       Key: getS3Path(fpath),
       Body: ptStream,
