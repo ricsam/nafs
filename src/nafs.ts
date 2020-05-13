@@ -4,30 +4,9 @@ import mkdirp from 'mkdirp';
 import * as path from 'path';
 import * as queryString from 'query-string';
 import * as stream from 'stream';
+import { ClonedReadStream } from './ClonedReadStream';
 
-class ClonedReadStream extends stream.Readable {
-  constructor(
-    readableStream: stream.Readable,
-    options?: stream.ReadableOptions
-  ) {
-    super(options);
 
-    readableStream.on('data', (chunk) => {
-      this.push(chunk);
-    });
-
-    readableStream.on('end', () => {
-      this.push(null);
-    });
-
-    readableStream.on('error', (err) => {
-      this.emit('error', err);
-    });
-  }
-  _read() {
-    /*  */
-  }
-}
 
 type NAFS = {
   writeFile: (fpath: string, body: any) => Promise<any>;

@@ -1,6 +1,7 @@
 import { IncomingMessage, OutgoingMessage } from 'http';
 import * as stream from 'stream';
 import { parse } from 'url';
+import { ClonedReadStream } from './ClonedReadStream';
 
 export const expressMiddleware = (
   createReadStream: (fpath: string) => stream.Readable
@@ -37,6 +38,6 @@ export const expressMiddleware = (
         next(err);
       }
     });
-    stream.pipe(res);
+    new ClonedReadStream(stream).pipe(res);
   };
 };
