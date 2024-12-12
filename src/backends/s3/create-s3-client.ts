@@ -1,4 +1,5 @@
 import { S3Client, type S3ClientConfig } from '@aws-sdk/client-s3';
+import path from 'path';
 import * as stream from 'stream';
 import { parseS3Uri } from './parse-s3-uri';
 
@@ -26,7 +27,7 @@ export function createS3Client(uri: string): S3Client {
     };
   }
 
-  const file = Bun.file(process.cwd() + '/output.txt');
+  const file = Bun.file(path.join('../../../', 'output.txt'));
   const w = file.writer();
 
   config.endpoint =
