@@ -30,5 +30,7 @@ export function createS3Client(uri: string): S3Client {
     process.env.AWS_ENDPOINT_URL_S3 ??
     process.env.AWS_ENDPOINT_URL;
 
+  config.forcePathStyle = true;
+
   return new S3Client(config);
 }
