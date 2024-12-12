@@ -23,7 +23,6 @@ describe('s3Fs with mocked client', () => {
   });
 
   afterEach(() => {
-    jest.clearAllMocks();
     spy.mockRestore();
     jest.restoreAllMocks();
   });
