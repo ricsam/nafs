@@ -27,22 +27,10 @@ export function createS3Client(uri: string): S3Client {
     };
   }
 
-  const file = Bun.file(path.join('../../../', 'output.txt'));
-  const w = file.writer();
-
   config.endpoint =
     parsed.endpoint ??
     process.env.AWS_ENDPOINT_URL_S3 ??
     process.env.AWS_ENDPOINT_URL;
-
-  const customLogger = new console.Console({
-    stderr: new stream.Writable(w),
-    stdout: new stream.Writable(w),
-  });
-
-  config.logger = customLogger;
-
-  customLogger.log('Creating S3 client with config:', config);
 
   return new S3Client(config);
 }
