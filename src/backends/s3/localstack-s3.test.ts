@@ -4,7 +4,7 @@ import {
   ListObjectsV2Command,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { beforeAll, describe, expect, it } from 'bun:test';
+import { beforeAll, beforeEach, describe, expect, it } from 'bun:test';
 import { createS3Fs } from './s3';
 
 describe('s3Fs LocalStack integration', () => {
@@ -12,12 +12,14 @@ describe('s3Fs LocalStack integration', () => {
   const BUCKET_NAME = 'test-bucket';
   let s3Client: S3Client;
 
-  beforeAll(async () => {
+  beforeEach(() => {
     process.env.AWS_DEFAULT_REGION = 'us-east-1';
     process.env.AWS_ACCESS_KEY_ID = 'test';
     process.env.AWS_SECRET_ACCESS_KEY = 'test';
     process.env.AWS_ENDPOINT_URL = LOCALSTACK_ENDPOINT;
+  });
 
+  beforeAll(async () => {
     // Create a client for test verification
     s3Client = new S3Client({
       endpoint: LOCALSTACK_ENDPOINT,
