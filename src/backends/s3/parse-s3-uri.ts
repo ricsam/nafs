@@ -19,13 +19,10 @@ export function parseS3Uri(uri: string): ParsedS3Uri {
   const [baseUri, queryString] = uri.split('?');
 
   // Parse query params if present
-  const endpoint =
-    queryString
-      ?.split('&')
-      .map((param) => param.split('='))
-      .find(([key]) => key === 'endpoint')?.[1] ??
-    process.env.AWS_ENDPOINT_URL_S3 ??
-    process.env.AWS_ENDPOINT_URL;
+  const endpoint = queryString
+    ?.split('&')
+    .map((param) => param.split('='))
+    .find(([key]) => key === 'endpoint')?.[1];
 
   if (!baseUri.startsWith('s3://')) {
     throw new Error('Invalid S3 URI format');
