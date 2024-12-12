@@ -1,0 +1,6 @@
+version: '3.8'
+services:
+  s3:
+    image: localstack/localstack:s3-latest
+    ports:
+      - "4566:4566"

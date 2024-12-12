@@ -1,47 +1,52 @@
 # Node Active FS - nafs
 
-```
+Nafs is an abstraction of the [Node fs API](https://nodejs.org/api/fs.html) where you can choose to point the fs to a remote location like s3, postgres, logstash, kibana or locally like the local filesystem or in memory. Check the [compatiblility table](#supported-file-system-methods) to see which parts of the fs API has been implemented for each backend.
+
+```bash
 npm install nafs
-yarn add nafs
 ```
 
-### Example
-
-```js
-const { nafs, expressMiddleware } = require('nafs');
-const express = require('express');
-
-const localFs = nafs('file:///tmp/dev_storage');
-const remoteFs = nafs('s3://key:secret@us-east-1/bucket_name/some/path');
-
-const app = express();
-
-app.use('/local-files', expressMiddleware(localFs.createReadStream));
-app.use('/remote-files', expressMiddleware(remoteFs.createReadStream));
-
-app.get('/', (req, res) => {
-  remoteFs.writeFile('/hello', 'Hello World').then(() => {
-    res.send('saved file to s3, check it out on /remote-files/hello or /read');
-  });
-});
-app.get('/read', (req, res) => {
-  removeFs.readFile('/hello').then((file) => {
-    res.send(file);
-  });
-});
-```
 
 ### Enable cache for remote data
 ```js
-const remoteFs = nafs('s3://key:secret@us-east-1/bucket_name?cacheDir=/tmp/images');
+const remoteFs = nafs('s3://key:secret@us-east-1/bucket_name');
+const localFs = nafs('/tmp/some_folder');
 
-console.time('hello');
-await remoteFs.readFile('/hello')
-console.timeEnd('hello'); /* 70 ms */
+await remoteFs.promises.writeFile('/hello', 'Hello World');
+await remoteFs.promises.readFile('/hello', 'utf8'); // Hello World
 
-/* now cached */
-console.time('hello');
-await remoteFs.readFile('/hello')
-console.timeEnd('hello'); /* 2 ms */
+await localFs.promises.writeFile('/hello', 'Hello World');
+await localFs.promises.readFile('/hello', 'utf8'); // Hello World
 ```
+
+
+
+## Supported File System Methods
+| Method               | File System | Memory | S3 | PostgreSQL | Logstash | Kibana |
+|---------------------|-------------|--------|-------|------------|-----------|---------|
+| `promises.readFile` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.writeFile` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.unlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.rmdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.mkdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.readdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.stat` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.lstat` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.chmod` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.chown` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.utimes` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.rename` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.copyFile` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.symlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.readlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.truncate` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.access` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `createReadStream` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `createWriteStream` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+
+✅ - Implemented  
+❌ - Not Implemented
+
+File System and Memory implementations are provided via memfs and linkfs, supporting full Node.js fs API compatibility. S3 implementation currently supports basic file reading and writing operations. PostgreSQL, Logstash, and Kibana implementations are planned for future development.
+
 
