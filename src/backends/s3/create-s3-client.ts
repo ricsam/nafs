@@ -1,4 +1,5 @@
 import { S3Client, type S3ClientConfig } from '@aws-sdk/client-s3';
+import * as stream from 'stream';
 import { parseS3Uri } from './parse-s3-uri';
 
 export function createS3Client(uri: string): S3Client {
@@ -25,15 +26,22 @@ export function createS3Client(uri: string): S3Client {
     };
   }
 
+  const file = Bun.file(process.cwd() + '/output.txt');
+  const w = file.writer();
+
   config.endpoint =
     parsed.endpoint ??
     process.env.AWS_ENDPOINT_URL_S3 ??
     process.env.AWS_ENDPOINT_URL;
 
-  config.logger = new console.Console({
-    stdout: process.stdout,
-    stderr: process.stderr,
+  const customLogger = new console.Console({
+    stderr: new stream.Writable(w),
+    stdout: new stream.Writable(w),
   });
-  process.stdout.write(JSON.stringify(config, null, 2));
+
+  config.logger = customLogger;
+
+  customLogger.log('Creating S3 client with config:', config);
+
   return new S3Client(config);
 }
