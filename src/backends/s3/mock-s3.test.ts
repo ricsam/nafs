@@ -9,14 +9,15 @@ import {
 } from 'bun:test';
 import { createS3Fs } from './s3';
 
-mock.module('./create-s3-client', () => {
-  const fn = jest.fn();
-  return { createS3Client: fn };
-});
-
 describe('s3Fs with mocked client', () => {
+
   let mockSend: jest.Mock;
+
   beforeEach(async () => {
+    mock.module('./create-s3-client', () => {
+      const fn = jest.fn();
+      return { createS3Client: fn };
+    });
     const { createS3Client } = await import('./create-s3-client');
     mockSend = jest.fn();
     (createS3Client as jest.Mock).mockReturnValue({

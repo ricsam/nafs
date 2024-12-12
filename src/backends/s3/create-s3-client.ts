@@ -32,9 +32,5 @@ export function createS3Client(uri: string): S3Client {
     process.env.AWS_ENDPOINT_URL_S3 ??
     process.env.AWS_ENDPOINT_URL;
 
-  if (config.endpoint) {
-    throw new Error(JSON.stringify(config));
-  }
-
   return new S3Client(config);
 }
