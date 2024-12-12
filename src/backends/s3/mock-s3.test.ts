@@ -27,6 +27,7 @@ describe('s3Fs with mocked client', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+    mock.restore();
   });
 
   it('should write a text file', async () => {
