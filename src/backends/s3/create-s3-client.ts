@@ -30,7 +30,10 @@ export function createS3Client(uri: string): S3Client {
     process.env.AWS_ENDPOINT_URL_S3 ??
     process.env.AWS_ENDPOINT_URL;
 
-  config.logger = console;
-  console.log(config);
+  config.logger = new console.Console({
+    stdout: process.stdout,
+    stderr: process.stderr,
+  });
+  process.stdout.write(JSON.stringify(config, null, 2));
   return new S3Client(config);
 }
