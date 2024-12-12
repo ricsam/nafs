@@ -1,3 +1,4 @@
+import { S3Client } from '@aws-sdk/client-s3';
 import {
   afterEach,
   beforeEach,
@@ -5,29 +6,26 @@ import {
   expect,
   it,
   jest,
-  mock,
+  spyOn,
 } from 'bun:test';
 import { createS3Fs } from './s3';
 
 describe('s3Fs with mocked client', () => {
-
   let mockSend: jest.Mock;
+  let spy: jest.Mock;
 
   beforeEach(async () => {
-    mock.module('./create-s3-client', () => {
-      const fn = jest.fn();
-      return { createS3Client: fn };
-    });
-    const { createS3Client } = await import('./create-s3-client');
-    mockSend = jest.fn();
-    (createS3Client as jest.Mock).mockReturnValue({
-      send: mockSend,
+    const m = await import('./create-s3-client');
+    spy = spyOn(m, 'createS3Client').mockImplementation((): S3Client => {
+      mockSend = jest.fn();
+      return { send: mockSend } as any;
     });
   });
 
   afterEach(() => {
     jest.clearAllMocks();
-    mock.restore();
+    spy.mockRestore();
+    jest.restoreAllMocks();
   });
 
   it('should write a text file', async () => {
