@@ -6,6 +6,10 @@ Nafs is an abstraction of the [Node fs API](https://nodejs.org/api/fs.html) wher
 npm install nafs
 ```
 
+[API docs](https://nafs-three.vercel.app/)\
+[npm](https://npmjs.com/package/nafs)\
+[Github](https://github.com/ricsam/nafs)
+
 
 ### Enable cache for remote data
 ```js
