@@ -8,7 +8,7 @@ import {
   jest,
   spyOn,
 } from 'bun:test';
-import { createS3Fs } from './s3';
+import { S3Fs } from './s3fs';
 
 describe('s3Fs with mocked client', () => {
   let mockSend: jest.Mock;
@@ -28,7 +28,7 @@ describe('s3Fs with mocked client', () => {
   });
 
   it('should write a text file', async () => {
-    const s3fs = createS3Fs('s3://test-bucket/prefix');
+    const s3fs = new S3Fs('s3://test-bucket/prefix');
     mockSend.mockResolvedValueOnce({});
 
     await s3fs.promises.writeFile('test.txt', 'Hello World', 'utf8');
@@ -46,7 +46,7 @@ describe('s3Fs with mocked client', () => {
   });
 
   it('should read a text file', async () => {
-    const s3fs = createS3Fs('s3://test-bucket/prefix');
+    const s3fs = new S3Fs('s3://test-bucket/prefix');
     const mockBody = {
       transformToString: jest.fn().mockResolvedValue('Hello World'),
       transformToByteArray: jest
@@ -64,7 +64,7 @@ describe('s3Fs with mocked client', () => {
   });
 
   it('should handle paths correctly', async () => {
-    const s3fs = createS3Fs('s3://test-bucket/base/path');
+    const s3fs = new S3Fs('s3://test-bucket/base/path');
     mockSend.mockResolvedValueOnce({});
 
     await s3fs.promises.writeFile('/some/nested/file.txt', 'content');
@@ -83,7 +83,7 @@ describe('s3Fs with mocked client', () => {
   });
 
   it('should handle errors', async () => {
-    const s3fs = createS3Fs('s3://test-bucket');
+    const s3fs = new S3Fs('s3://test-bucket');
     mockSend.mockRejectedValueOnce(new Error('S3 error'));
 
     expect(s3fs.promises.readFile('non-existent.txt')).rejects.toThrow(

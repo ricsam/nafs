@@ -19,34 +19,31 @@ await localFs.promises.writeFile('/hello', 'Hello World');
 await localFs.promises.readFile('/hello', 'utf8'); // Hello World
 ```
 
-
-
 ## Supported File System Methods
-| Method               | File System | Memory | S3 | PostgreSQL | Logstash | Kibana |
-|---------------------|-------------|--------|-------|------------|-----------|---------|
-| `promises.readFile` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.writeFile` | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.unlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.rmdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.mkdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.readdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.stat` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.lstat` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.chmod` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.chown` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.utimes` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.rename` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.copyFile` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.symlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.readlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.truncate` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `promises.access` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `createReadStream` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| `createWriteStream` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+
+| Method               | File System | Memory | Amazon S3 | Google Cloud Storage | Azure Storage |
+|---------------------|-------------|---------|-----------|---------------------|---------------|
+| `promises.readFile` | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `promises.writeFile` | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `promises.unlink` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.rmdir` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.mkdir` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.readdir` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.stat` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.lstat` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.chmod` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.chown` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.utimes` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.rename` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.copyFile` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.symlink` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.readlink` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.truncate` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `promises.access` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `createReadStream` | ✅ | ✅ | ❌ | ❌ | ❌ |
+| `createWriteStream` | ✅ | ✅ | ✅ | ❌ | ❌ |
 
 ✅ - Implemented  
 ❌ - Not Implemented
 
-File System and Memory implementations are provided via memfs and linkfs, supporting full Node.js fs API compatibility. S3 implementation currently supports basic file reading and writing operations. PostgreSQL, Logstash, and Kibana implementations are planned for future development.
-
-
+File System and Memory implementations are provided via memfs and linkfs, supporting full Node.js fs API compatibility. Cloud storage implementations (Amazon S3, Google Cloud Storage, Azure Storage) are under development, with S3 currently supporting basic file reading and writing operations.

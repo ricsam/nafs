@@ -1,51 +1,45 @@
-import type { IFs } from 'memfs';
+import { parseUri, proto } from './parse-uri';
 
-type NAFSOptions = {
-  /**
-   * only used when the storage is a file://
-   */
-  fs?: IFs;
-  /**
-   * only used when the storage is a s3://
-   */
-  s3?: {
+export async function nafs(
+  uri: `s3://${string}`,
+  options?: {
     accessKeyId: string;
     secretAccessKey: string;
     region: string;
-  };
-};
-
-export const nafs = async (
-  storage: string,
-  options?: NAFSOptions
-): Promise<IFs> => {
-  if (storage === ':memory:') {
+  }
+): Promise<typeof import('./backends/s3/s3fs').S3Fs>;
+/**
+ * @returns A [linkfs](https://github.com/ricsam/linkfs) instance
+ */
+export async function nafs(
+  uri: `file://${string}`
+): Promise<import('memfs').IFs>;
+/**
+ * @returns A [memfs](https://github.com/streamich/memfs) instance
+ */
+export async function nafs(uri: ':memory:'): Promise<import('memfs').IFs>;
+export async function nafs(
+  uri: `${proto}://${string}` | ':memory:'
+): Promise<import('memfs').IFs | typeof import('./backends/s3/s3fs').S3Fs> {
+  if (uri === ':memory:') {
     const { createMemFs } = await import('./backends/local/memory');
     return createMemFs();
   }
 
-  let proto: string;
-  let uri: string;
-  const r = storage.match(/^([^:]+):\/\/(.+)/);
-  if (r) {
-    proto = r[1];
-    uri = r[2];
-  } else {
-    throw new Error('Invalid url');
-  }
+  const parsed = parseUri(uri);
 
-  switch (proto) {
+  switch (parsed.proto) {
     case 'file': {
       const { createFileFs } = await import('./backends/local/file');
-      const lfs = createFileFs(uri, options?.fs);
+      const lfs = createFileFs(parsed.uri);
       return lfs as any;
     }
     case 's3': {
-      const { createS3Fs } = await import('./backends/s3/s3');
-      return createS3Fs(uri) as any;
+      const { S3Fs } = await import('./backends/s3/s3fs');
+      return new S3Fs(parsed.uri) as any;
     }
     default: {
       throw new Error('Invalid url supplied, the protocol is not supported');
     }
   }
-};
+}

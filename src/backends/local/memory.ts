@@ -1,5 +1,5 @@
-import type { IFs } from 'memfs';
-import { fs } from 'memfs';
+import { fs, IFs } from 'memfs';
+
 export const createMemFs = (): IFs => {
   return fs;
 };

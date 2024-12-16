@@ -1,12 +1,18 @@
 import { link } from '@ricsam/linkfs';
-import type { IFs } from 'memfs';
 import * as path from 'path';
-import * as realFs from 'fs';
+import * as realfs from 'fs';
+import { parseUri } from '../../parse-uri';
 
-export const createFileFs = (uri: string, fs?: IFs): IFs | typeof realFs => {
-  const lfs = link(fs ?? realFs, [
+export const createLinkFs = <T>(uri: `file://${string}`, fs: T): T => {
+  const parsed = parseUri(uri);
+  const lfs = link(fs, [
     '/',
-    uri.startsWith('/') ? uri : path.join(process.cwd(), uri),
+    parsed.path.startsWith('/')
+      ? parsed.path
+      : path.join(process.cwd(), parsed.path),
   ]);
   return lfs;
+};
+export const createFileFs = (uri: `file://${string}`) => {
+  return createLinkFs(uri, realfs);
 };

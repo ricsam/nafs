@@ -2,6 +2,7 @@ export interface ParsedS3Uri {
   region?: string;
   bucket: string;
   key: string;
+  forcePathStyle?: boolean;
   credentials?: {
     accessKeyId: string;
     secretAccessKey?: string;
@@ -19,10 +20,11 @@ export function parseS3Uri(uri: string): ParsedS3Uri {
   const [baseUri, queryString] = uri.split('?');
 
   // Parse query params if present
-  const endpoint = queryString
-    ?.split('&')
-    .map((param) => param.split('='))
-    .find(([key]) => key === 'endpoint')?.[1];
+  const params = new URLSearchParams(queryString);
+  const endpoint = params.get('endpoint') ?? undefined;
+  const forcePathStyle = params.has('forcePathStyle')
+    ? !['no', 'false'].includes(params.get('forcePathStyle') ?? '')
+    : undefined;
 
   if (!baseUri.startsWith('s3://')) {
     throw new Error('Invalid S3 URI format');
@@ -53,7 +55,8 @@ export function parseS3Uri(uri: string): ParsedS3Uri {
         region,
         bucket,
         key: keyParts.join('/') || '',
-        ...(endpoint && { endpoint: decodeURIComponent(endpoint) }),
+        endpoint,
+        forcePathStyle,
       };
     }
 
@@ -68,7 +71,8 @@ export function parseS3Uri(uri: string): ParsedS3Uri {
         region,
         bucket,
         key: keyParts.join('/') || '',
-        ...(endpoint && { endpoint: decodeURIComponent(endpoint) }),
+        endpoint,
+        forcePathStyle,
       };
     }
 
@@ -82,7 +86,8 @@ export function parseS3Uri(uri: string): ParsedS3Uri {
       return {
         bucket,
         key: keyParts.join('/') || '',
-        ...(endpoint && { endpoint: decodeURIComponent(endpoint) }),
+        endpoint,
+        forcePathStyle,
       };
     }
   }

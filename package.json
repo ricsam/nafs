@@ -1,6 +1,6 @@
 {
   "name": "nafs",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Node Active FS - nafs. File system abstraction to read/write files to AWS S3 or local directory. Includes middleware for usage with express.",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
@@ -15,7 +15,8 @@
   "scripts": {
     "start": "bun run src/index.ts",
     "test": "bun test",
-    "build": "rm -rf ./dist ./types && tsc -p tsconfig.build.json && swc ./src --config-file .swcrc.cjs.json --out-dir ./dist/cjs --ignore **/*.test.ts --strip-leading-paths && swc ./src --config-file .swcrc.mjs.json --out-dir ./dist/mjs --ignore **/*.test.ts --strip-leading-paths && ./patch-dist-dirs.sh"
+    "build": "rm -rf ./dist ./types && tsc -p tsconfig.build.json && swc ./src --config-file .swcrc.cjs.json --out-dir ./dist/cjs --ignore **/*.test.ts --strip-leading-paths && swc ./src --config-file .swcrc.mjs.json --out-dir ./dist/mjs --ignore **/*.test.ts --strip-leading-paths && ./patch-dist-dirs.sh",
+    "docs": "typedoc src/index.ts"
   },
   "publishConfig": {
     "access": "public"
@@ -46,7 +47,9 @@
     "@changesets/cli": "2.27.10",
     "typescript": "^5.7.2",
     "@swc/cli": "^0.5.2",
-    "@swc/core": "^1.10.1"
+    "@swc/core": "^1.10.1",
+    "@aws-sdk/lib-storage": "^3.709.0",
+    "typedoc": "^0.27.5"
   },
   "dependencies": {}
 }
