@@ -19,16 +19,15 @@ export async function nafs(
  */
 export async function nafs(uri: ':memory:'): Promise<import('memfs').IFs>;
 export async function nafs(
-  uri: `${proto}://${string}` | ':memory:'
+  uri: string
 ): Promise<import('memfs').IFs | typeof import('./backends/s3/s3fs').S3Fs> {
-  if (uri === ':memory:') {
-    const { createMemFs } = await import('./backends/local/memory');
-    return createMemFs();
-  }
-
-  const parsed = parseUri(uri);
+  const parsed = parseUri(uri as any);
 
   switch (parsed.proto) {
+    case 'memory': {
+      const { createMemFs } = await import('./backends/local/memory');
+      return createMemFs();
+    }
     case 'file': {
       const { createFileFs } = await import('./backends/local/file');
       const lfs = createFileFs(parsed.uri);
