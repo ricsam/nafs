@@ -13,6 +13,6 @@ export const createLinkFs = <T>(uri: `file://${string}`, fs: T): T => {
   ]);
   return lfs;
 };
-export const createFileFs = (uri: `file://${string}`) => {
+export function createFileFs(uri: `file://${string}`): typeof realfs {
   return createLinkFs(uri, realfs);
-};
+}
