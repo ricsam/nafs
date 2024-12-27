@@ -1,5 +1,11 @@
 # nafs
 
+## 0.1.5
+
+### Patch Changes
+
+- Fix types
+
 ## 0.1.4
 
 ### Patch Changes

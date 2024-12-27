@@ -2,7 +2,7 @@ import { parseUri } from './parse-uri';
 
 export async function nafs(
   uri: `enstore://${string}`
-): Promise<typeof import('@enstore/fs').EnstoreFs>;
+): Promise<import('@enstore/fs').EnstoreFs>;
 export async function nafs(
   uri: `s3://${string}`,
   options?: {
@@ -10,7 +10,7 @@ export async function nafs(
     secretAccessKey: string;
     region: string;
   }
-): Promise<typeof import('./backends/s3/s3fs').S3Fs>;
+): Promise<import('./backends/s3/s3fs').S3Fs>;
 /**
  * @returns A [linkfs](https://github.com/ricsam/linkfs) instance
  */
@@ -25,15 +25,15 @@ export async function nafs(
   uri: string
 ): Promise<
   | import('memfs').IFs
-  | typeof import('./backends/s3/s3fs').S3Fs
-  | typeof import('@enstore/fs').EnstoreFs
+  | import('./backends/s3/s3fs').S3Fs
+  | import('@enstore/fs').EnstoreFs
 >;
 export async function nafs(
   uri: string
 ): Promise<
   | import('memfs').IFs
-  | typeof import('./backends/s3/s3fs').S3Fs
-  | typeof import('@enstore/fs').EnstoreFs
+  | import('./backends/s3/s3fs').S3Fs
+  | import('@enstore/fs').EnstoreFs
 > {
   const parsed = parseUri(uri as any);
 
@@ -65,7 +65,6 @@ export async function nafs(
         username: options.username,
         pathPrefix: options.pathPrefix,
       });
-      fs.createWriteStream('test.txt');
       return fs as any;
     }
     default: {
