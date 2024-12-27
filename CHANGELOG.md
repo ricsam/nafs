@@ -1,5 +1,11 @@
 # nafs
 
+## 0.1.3
+
+### Patch Changes
+
+- better enstore support
+
 ## 0.1.2
 
 ### Patch Changes

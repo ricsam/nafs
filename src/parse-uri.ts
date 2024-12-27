@@ -15,6 +15,11 @@ export type ParsedUri =
       proto: 'memory';
       path: ':memory:';
       uri: ':memory:';
+    }
+  | {
+      proto: 'enstore';
+      path: string;
+      uri: `enstore://${string}`;
     };
 
 export function parseUri(uri: `${proto}://${string}` | ':memory:'): ParsedUri {
