@@ -1,10 +1,12 @@
 import {
   CreateBucketCommand,
   GetObjectCommand,
+  HeadObjectCommand,
   ListObjectsV2Command,
   S3Client,
 } from '@aws-sdk/client-s3';
 import { beforeAll, beforeEach, describe, expect, it } from 'bun:test';
+import { Readable } from 'node:stream';
 import { S3Fs } from './s3fs';
 
 describe('s3Fs LocalStack integration', () => {
@@ -208,6 +210,98 @@ describe('s3Fs LocalStack integration', () => {
 
       const content = await getObjectContent('mixed-input.txt');
       expect(content).toBe('Hello World');
+    });
+
+    describe('createReadStream', () => {
+      async function streamToUint8Array(stream: Readable): Promise<Uint8Array> {
+        const chunks: Uint8Array[] = [];
+        for await (const chunk of stream) {
+          chunks.push(
+            chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk)
+          );
+        }
+        const totalLength = chunks.reduce(
+          (sum, chunk) => sum + chunk.length,
+          0
+        );
+        const result = new Uint8Array(totalLength);
+        let offset = 0;
+        for (const chunk of chunks) {
+          result.set(chunk, offset);
+          offset += chunk.length;
+        }
+        return result;
+      }
+
+      it('should read a small file', async () => {
+        const s3fs = new S3Fs(
+          `s3://${BUCKET_NAME}?endpoint=http://localhost:4566`
+        );
+        const content = 'Hello World';
+        await s3fs.promises.writeFile('small.txt', content);
+
+        const readStream = s3fs.createReadStream('small.txt');
+        const data = await streamToUint8Array(readStream);
+        expect(new TextDecoder().decode(data)).toBe(content);
+      });
+
+      it('should read a large file', async () => {
+        const s3fs = new S3Fs(
+          `s3://${BUCKET_NAME}?endpoint=http://localhost:4566`
+        );
+
+        const size = 6 * 1024 * 1024;
+
+        const content = new Uint8Array(size).fill(65); // 6MB of 'A's
+        await s3fs.promises.writeFile('large.txt', content);
+
+        // Verify the file was written correctly
+        const stats = await s3Client.send(
+          new HeadObjectCommand({
+            Bucket: BUCKET_NAME,
+            Key: 'large.txt',
+          })
+        );
+        expect(stats.ContentLength).toBe(size);
+
+        const readStream = s3fs.createReadStream('large.txt');
+        const data = await streamToUint8Array(readStream);
+        expect(data).toEqual(content);
+      });
+
+      it('should handle non-existent files', async () => {
+        const s3fs = new S3Fs(
+          `s3://${BUCKET_NAME}?endpoint=http://localhost:4566`
+        );
+        const readStream = s3fs.createReadStream('non-existent.txt');
+        await expect(streamToUint8Array(readStream)).rejects.toThrow();
+      });
+
+      it('should handle stream destruction', async () => {
+        const s3fs = new S3Fs(
+          `s3://${BUCKET_NAME}?endpoint=http://localhost:4566`
+        );
+        const content = 'Test Content';
+        await s3fs.promises.writeFile('destroy-test.txt', content);
+
+        const readStream = s3fs.createReadStream('destroy-test.txt');
+        readStream.destroy();
+
+        await new Promise<void>((resolve) => {
+          readStream.on('close', resolve);
+        });
+
+        expect(readStream.destroyed).toBe(true);
+      });
+
+      it('should emit error on invalid bucket', async () => {
+        const invalidS3fs = new S3Fs(
+          's3://invalid-bucket?endpoint=http://localhost:4566'
+        );
+        const readStream = invalidS3fs.createReadStream('test.txt');
+
+        await expect(streamToUint8Array(readStream)).rejects.toThrow();
+      });
     });
   });
 });

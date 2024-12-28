@@ -3,10 +3,11 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import stream, { Writable } from 'node:stream';
+import stream, { Readable, Writable } from 'node:stream';
 import { createS3Client } from './create-s3-client';
 import { createWriteStream } from './create-write-stream';
 import { ParsedS3Uri, parseS3Uri } from './parse-s3-uri';
+import { createReadStream } from './create-read-stream';
 
 class S3BaseFs {
   protected client: S3Client;
@@ -134,5 +135,9 @@ export class S3Fs extends S3BaseFs {
   public createWriteStream(path: string): Writable {
     const { bucket, key } = this.normalizePath(path);
     return createWriteStream(this.client, bucket, key);
+  }
+  public createReadStream(path: string): Readable {
+    const { bucket, key } = this.normalizePath(path);
+    return createReadStream(this.client, bucket, key);
   }
 }
