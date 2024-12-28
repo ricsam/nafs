@@ -1,5 +1,11 @@
 # nafs
 
+## 0.1.6
+
+### Patch Changes
+
+- add createReadStream to s3
+
 ## 0.1.5
 
 ### Patch Changes
