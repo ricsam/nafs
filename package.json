@@ -40,7 +40,6 @@
   "devDependencies": {
     "dotenv": "16.4.7",
     "@types/bun": "latest",
-    "aws-sdk": "2.1692.0",
     "memfs": "4.15.1",
     "@ricsam/linkfs": "2.0.8",
     "@aws-sdk/client-s3": "3.717.0",
@@ -55,7 +54,6 @@
   },
   "peerDependencies": {
     "@aws-sdk/lib-storage": "*",
-    "aws-sdk": "*",
     "@aws-sdk/client-s3": "*",
     "memfs": "*",
     "@ricsam/linkfs": "*",
@@ -63,9 +61,6 @@
   },
   "peerDependenciesMeta": {
     "@aws-sdk/lib-storage": {
-      "optional": true
-    },
-    "aws-sdk": {
       "optional": true
     },
     "@aws-sdk/client-s3": {
