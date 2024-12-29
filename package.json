@@ -50,7 +50,7 @@
     "@swc/core": "1.10.3",
     "@aws-sdk/lib-storage": "3.717.0",
     "typedoc": "0.27.6",
-    "@enstore/fs": "0.0.6"
+    "@enstore/fs": "0.0.7"
   },
   "peerDependencies": {
     "@aws-sdk/lib-storage": "*",
