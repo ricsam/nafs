@@ -1,6 +1,6 @@
 {
   "name": "nafs",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Node Active FS - nafs. File system abstraction to read/write files to AWS S3 or local directory. Includes middleware for usage with express.",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",

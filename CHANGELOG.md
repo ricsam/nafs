@@ -1,5 +1,11 @@
 # nafs
 
+## 0.1.7
+
+### Patch Changes
+
+- Remove non async exports from entrypoint
+
 ## 0.1.6
 
 ### Patch Changes

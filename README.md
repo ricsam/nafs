@@ -25,27 +25,27 @@ await localFs.promises.readFile('/hello', 'utf8'); // Hello World
 
 ## Supported File System Methods
 
-| Method               | File System | Memory | Amazon S3 | Google Cloud Storage | Azure Storage |
-|---------------------|-------------|---------|-----------|---------------------|---------------|
-| `promises.readFile` | ✅ | ✅ | ✅ | ❌ | ❌ |
-| `promises.writeFile` | ✅ | ✅ | ✅ | ❌ | ❌ |
-| `promises.unlink` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.rmdir` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.mkdir` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.readdir` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.stat` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.lstat` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.chmod` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.chown` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.utimes` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.rename` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.copyFile` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.symlink` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.readlink` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.truncate` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `promises.access` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `createReadStream` | ✅ | ✅ | ❌ | ❌ | ❌ |
-| `createWriteStream` | ✅ | ✅ | ✅ | ❌ | ❌ |
+| Method               | File System | Memory | Amazon S3 | [Enstore](https://github.com/ricsam/enstore/tree/main/server) | Google Cloud Storage | Azure Storage |
+|---------------------|-------------|---------|-----------|---------|---------------------|---------------|
+| `promises.readFile` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `promises.writeFile` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `promises.unlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.rmdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.mkdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.readdir` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.stat` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.lstat` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.chmod` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.chown` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.utimes` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.rename` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.copyFile` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.symlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.readlink` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.truncate` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `promises.access` | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| `createReadStream` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
+| `createWriteStream` | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ |
 
 ✅ - Implemented  
 ❌ - Not Implemented
