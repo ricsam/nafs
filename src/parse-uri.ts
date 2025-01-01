@@ -23,6 +23,13 @@ export type ParsedUri =
     };
 
 export function parseUri(uri: `${proto}://${string}` | ':memory:'): ParsedUri {
+  if (uri === ':memory:') {
+    return {
+      proto: 'memory',
+      path: ':memory:',
+      uri: ':memory:',
+    };
+  }
   let proto: string;
   let path: string;
   const r = uri.match(/^([^:]+):\/\/(.+)/);

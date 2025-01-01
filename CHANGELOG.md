@@ -1,5 +1,11 @@
 # nafs
 
+## 0.1.8
+
+### Patch Changes
+
+- Support :memory: nafs uri
+
 ## 0.1.7
 
 ### Patch Changes
