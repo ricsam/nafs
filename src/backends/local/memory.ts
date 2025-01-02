@@ -1,5 +1,5 @@
-import { fs, IFs } from 'memfs';
+import { IFs, memfs } from 'memfs';
 
 export const createMemFs = (): IFs => {
-  return fs;
+  return memfs().fs;
 };

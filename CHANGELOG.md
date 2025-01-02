@@ -1,5 +1,11 @@
 # nafs
 
+## 0.1.9
+
+### Patch Changes
+
+- use memfs function to create a memory fs
+
 ## 0.1.8
 
 ### Patch Changes
