@@ -8,6 +8,7 @@ import { createS3Client } from './create-s3-client';
 import { createWriteStream } from './create-write-stream';
 import { ParsedS3Uri, parseS3Uri } from './parse-s3-uri';
 import { createReadStream } from './create-read-stream';
+import { MakeDirectoryOptions } from 'node:fs';
 
 class S3BaseFs {
   protected client: S3Client;
@@ -127,6 +128,13 @@ export class S3PromiseFs extends S3BaseFs {
       err.message = `Error reading file from S3: ${err.message}`;
       throw err;
     }
+  }
+
+  public async mkdir(
+    path: string,
+    options?: MakeDirectoryOptions & { recursive: true }
+  ): Promise<void> {
+    // S3 does not have directories, so this is a no-op
   }
 }
 

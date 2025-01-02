@@ -1,6 +1,6 @@
 {
   "name": "nafs",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Node Active FS - nafs. File system abstraction to read/write files to AWS S3 or local directory. Includes middleware for usage with express.",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
@@ -50,7 +50,7 @@
     "@swc/core": "1.10.4",
     "@aws-sdk/lib-storage": "3.717.0",
     "typedoc": "0.27.6",
-    "@enstore/fs": "0.0.8"
+    "@enstore/fs": "0.0.9"
   },
   "peerDependencies": {
     "@aws-sdk/lib-storage": "*",
