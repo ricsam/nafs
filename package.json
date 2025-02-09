@@ -43,7 +43,7 @@
     "memfs": "4.17.0",
     "@ricsam/linkfs": "2.0.8",
     "@aws-sdk/client-s3": "3.744.0",
-    "prettier": "3.4.2",
+    "prettier": "3.5.0",
     "@changesets/cli": "2.27.12",
     "typescript": "5.7.3",
     "@swc/cli": "0.6.0",
