@@ -49,7 +49,7 @@
     "@swc/cli": "0.7.3",
     "@swc/core": "1.11.21",
     "@aws-sdk/lib-storage": "3.787.0",
-    "typedoc": "0.28.2",
+    "typedoc": "0.28.3",
     "@enstore/fs": "0.0.9"
   },
   "peerDependencies": {
