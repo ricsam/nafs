@@ -47,7 +47,7 @@
     "@changesets/cli": "2.29.5",
     "typescript": "5.8.3",
     "@swc/cli": "0.7.7",
-    "@swc/core": "1.12.4",
+    "@swc/core": "1.12.5",
     "@aws-sdk/lib-storage": "3.832.0",
     "typedoc": "0.28.5",
     "@enstore/fs": "0.0.9"
