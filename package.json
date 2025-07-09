@@ -46,7 +46,7 @@
     "prettier": "3.6.2",
     "@changesets/cli": "2.29.5",
     "typescript": "5.8.3",
-    "@swc/cli": "0.7.7",
+    "@swc/cli": "0.7.8",
     "@swc/core": "1.12.11",
     "@aws-sdk/lib-storage": "3.842.0",
     "typedoc": "0.28.7",
