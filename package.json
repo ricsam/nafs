@@ -38,7 +38,7 @@
   "author": "Richie <oss@ricsam.dev>",
   "license": "MIT",
   "devDependencies": {
-    "dotenv": "17.2.1",
+    "dotenv": "17.2.2",
     "@types/bun": "latest",
     "memfs": "4.38.2",
     "@ricsam/linkfs": "2.0.8",
