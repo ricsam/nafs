@@ -1,0 +1,53 @@
+---
+title: "In-memory files"
+description: "Create an isolated, ephemeral file system for tests and temporary application data."
+---
+
+Pass `:memory:` to create a new [`memfs`](https://github.com/streamich/memfs) file system.
+
+## Install dependencies
+
+```bash
+npm install nafs memfs @ricsam/linkfs
+```
+
+## Usage
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs(':memory:')
+
+await fs.promises.mkdir('/cache', { recursive: true })
+await fs.promises.writeFile('/cache/value.txt', '42')
+
+const value = await fs.promises.readFile('/cache/value.txt', 'utf8')
+console.log(value) // 42
+```
+
+Each call creates an independent file system:
+
+```ts
+const first = await nafs(':memory:')
+const second = await nafs(':memory:')
+
+await first.promises.writeFile('/only-in-first.txt', 'data')
+// The file does not exist in `second`.
+```
+
+<Note>
+  In-memory data is not persisted and disappears when its file system instance is discarded or the process exits.
+</Note>
+
+## Testing
+
+The memory backend is useful when production code accepts an fs-like object:
+
+```ts
+async function saveResult(fs: Awaited<ReturnType<typeof nafs>>) {
+  await fs.promises.writeFile('/result.json', '{"ok":true}')
+}
+
+const testFs = await nafs(':memory:')
+await saveResult(testFs)
+```

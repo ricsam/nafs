@@ -1,0 +1,65 @@
+---
+title: "nafs API"
+description: "Reference for creating a backend-specific file system from a URI."
+---
+
+## `nafs(uri)`
+
+Creates a file system implementation selected from the URI protocol.
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs(uri)
+```
+
+### Parameters
+
+<ParamField path="uri" type="string" required>
+  A backend URI. Use `:memory:`, `file://...`, `s3://...`, or `enstore://...`.
+</ParamField>
+
+### Returns
+
+A promise for the backend-specific file system:
+
+| URI | Return type |
+| --- | --- |
+| `:memory:` | `memfs.IFs` |
+| `file://...` | `memfs.IFs`-compatible linked file system |
+| `s3://...` | `S3Fs` |
+| `enstore://...` | `EnstoreFs` |
+
+TypeScript narrows the return type when the URI is a matching string literal or template literal.
+
+```ts
+const memoryFs = await nafs(':memory:')
+const s3Fs = await nafs('s3://my-bucket/path')
+```
+
+### Errors
+
+An unsupported protocol throws an error:
+
+```ts
+await nafs('https://example.com/files')
+// Error: Invalid url supplied, the protocol is not supported
+```
+
+Malformed URIs can also throw backend-specific parsing errors.
+
+## S3 file system
+
+`S3Fs` includes:
+
+- `promises.readFile(path, encoding?)`
+- `promises.writeFile(path, data, encoding?)`
+- `promises.mkdir(path, options?)`, implemented as a no-op because S3 has no real directories
+- `createReadStream(path)`
+- `createWriteStream(path)`
+
+Paths are appended to the optional key prefix in the S3 URI. A leading slash on an operation path is ignored.
+
+## Local and memory file systems
+
+These backends expose the APIs supplied by Node.js `fs`, `memfs`, and `@ricsam/linkfs`. See the [compatibility table](/reference/compatibility) for commonly used operations.

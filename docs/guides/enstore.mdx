@@ -1,0 +1,50 @@
+---
+title: "Enstore"
+description: "Connect to an Enstore endpoint with optional credentials and a path prefix."
+---
+
+## Install dependencies
+
+```bash
+npm install nafs @enstore/fs
+```
+
+## URI format
+
+```text
+enstore://username:password/path/prefix?endpoint=https%3A%2F%2Fexample.com%2Fenstore
+```
+
+Credentials, the path prefix, and the endpoint are optional. Credentials use a colon separator and do not use `@`.
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs(
+  'enstore://user:password/app/files?endpoint=https%3A%2F%2Fstorage.example.com%2Fenstore'
+)
+
+await fs.promises.writeFile('/hello.txt', 'Hello')
+```
+
+The configured prefix for this example is `/app/files`.
+
+## Encode special characters
+
+Percent-encode reserved characters in credentials and the endpoint:
+
+```ts
+const fs = await nafs(
+  'enstore://user:pass%2Fword/files?endpoint=http%3A%2F%2Flocalhost%3A3000%2Fenstore'
+)
+```
+
+Here, the decoded password is `pass/word`.
+
+<Warning>
+  Treat credentials in a URI as secrets. Do not commit them or expose the URI in application logs.
+</Warning>
+
+## Supported APIs
+
+The Enstore backend currently provides promise-based file reads and writes plus read and write streams. Refer to the [`@enstore/fs`](https://www.npmjs.com/package/@enstore/fs) package for backend-specific behavior.

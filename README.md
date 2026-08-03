@@ -51,3 +51,14 @@ await localFs.promises.readFile('/hello', 'utf8'); // Hello World
 ❌ - Not Implemented
 
 File System and Memory implementations are provided via memfs and linkfs, supporting full Node.js fs API compatibility. Cloud storage implementations (Amazon S3, Google Cloud Storage, Azure Storage) are under development, with S3 currently supporting basic file reading and writing operations.
+
+## Documentation development
+
+The Mintlify documentation source is in [`docs/`](docs). Install the [Mintlify CLI](https://www.mintlify.com/docs/cli/install), then preview or validate the site from the repository root:
+
+```bash
+npm run docs
+npm run docs:check
+```
+
+When configuring this repository in Mintlify, set the documentation path to `docs`.

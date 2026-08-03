@@ -1,0 +1,56 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "nafs",
+  "description": "A Node.js file system abstraction for local files, memory, Amazon S3, and Enstore.",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1D4ED8"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting started",
+        "pages": ["index", "quickstart"]
+      },
+      {
+        "group": "Guides",
+        "pages": [
+          "guides/local-files",
+          "guides/memory",
+          "guides/amazon-s3",
+          "guides/enstore",
+          "guides/streams"
+        ]
+      },
+      {
+        "group": "Reference",
+        "pages": ["reference/nafs", "reference/compatibility"]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "npm",
+        "href": "https://www.npmjs.com/package/nafs"
+      }
+    ],
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/ricsam/nafs"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/ricsam/nafs"
+    }
+  },
+  "contextual": {
+    "options": ["copy", "view", "chatgpt", "claude"]
+  },
+  "search": {
+    "prompt": "Search nafs documentation"
+  }
+}

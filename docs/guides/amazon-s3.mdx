@@ -1,0 +1,85 @@
+---
+title: "Amazon S3"
+description: "Configure an S3-backed file system, including credentials, regions, prefixes, and custom endpoints."
+---
+
+## Install dependencies
+
+```bash
+npm install nafs @aws-sdk/client-s3
+```
+
+## URI formats
+
+nafs accepts three S3 URI forms:
+
+| Form | Example |
+| --- | --- |
+| Bucket and prefix | `s3://my-bucket/app-data` |
+| Region, bucket, and prefix | `s3://us-east-1/my-bucket/app-data` |
+| Credentials, region, bucket, and prefix | `s3://ACCESS_KEY:SECRET_KEY@us-east-1/my-bucket/app-data` |
+
+The prefix is optional. File paths passed to the fs instance are appended to it.
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs('s3://us-east-1/my-bucket/app-data')
+await fs.promises.writeFile('/users/42.json', '{"name":"Ada"}')
+```
+
+This writes the object `app-data/users/42.json` in `my-bucket`.
+
+## Credentials and region
+
+Configuration is resolved in this order:
+
+1. Values embedded in the URI.
+2. `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and `AWS_DEFAULT_REGION`.
+3. The AWS SDK's normal defaults when nafs does not set the value.
+
+<Warning>
+  Avoid embedding credentials in source code, logs, shell history, or committed configuration. Environment variables or the AWS SDK credential providers are safer for most applications.
+</Warning>
+
+```ts
+const fs = await nafs('s3://us-east-1/my-bucket')
+```
+
+```bash
+export AWS_ACCESS_KEY_ID=example
+export AWS_SECRET_ACCESS_KEY=example
+export AWS_DEFAULT_REGION=us-east-1
+```
+
+## S3-compatible endpoints
+
+Use the URL-encoded `endpoint` query parameter for LocalStack, MinIO, or another S3-compatible service:
+
+```ts
+const fs = await nafs(
+  's3://us-east-1/my-bucket?endpoint=http%3A%2F%2Flocalhost%3A4566'
+)
+```
+
+You can also set `AWS_ENDPOINT_URL_S3` or `AWS_ENDPOINT_URL`. URI configuration takes precedence.
+
+When an endpoint is configured, path-style requests are enabled by default. Override this with `forcePathStyle=false`:
+
+```ts
+const fs = await nafs(
+  's3://my-bucket?endpoint=https%3A%2F%2Fs3.example.com&forcePathStyle=false'
+)
+```
+
+## Supported APIs
+
+The S3 backend currently supports:
+
+- `promises.readFile`
+- `promises.writeFile`
+- `promises.mkdir` as a no-op
+- `createReadStream`
+- `createWriteStream`
+
+See [Streams](/guides/streams) for streaming examples.

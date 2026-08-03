@@ -1,0 +1,58 @@
+---
+title: "Node Active FS"
+description: "Use one familiar file system interface across local files, memory, Amazon S3, and Enstore."
+---
+
+`nafs` selects a storage backend from a URI and returns a Node-style file system interface. Application code can use familiar methods such as `promises.readFile`, `promises.writeFile`, `createReadStream`, and `createWriteStream` without constructing each backend directly.
+
+```bash
+npm install nafs
+```
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs(':memory:')
+
+await fs.promises.writeFile('/hello.txt', 'Hello from nafs')
+console.log(await fs.promises.readFile('/hello.txt', 'utf8'))
+```
+
+## Choose a backend
+
+<CardGroup cols={2}>
+  <Card title="Local files" icon="folder" href="/guides/local-files">
+    Scope the Node file system to a directory with a `file://` URI.
+  </Card>
+  <Card title="In memory" icon="memory" href="/guides/memory">
+    Create an isolated, ephemeral file system with `:memory:`.
+  </Card>
+  <Card title="Amazon S3" icon="cloud" href="/guides/amazon-s3">
+    Read, write, and stream objects through an S3 URI.
+  </Card>
+  <Card title="Enstore" icon="database" href="/guides/enstore">
+    Connect to Enstore with an optional path prefix and endpoint.
+  </Card>
+</CardGroup>
+
+## URI at a glance
+
+| Backend | URI |
+| --- | --- |
+| Local directory | `file:///absolute/path` or `file://relative/path` |
+| Memory | `:memory:` |
+| Amazon S3 | `s3://bucket/optional/prefix` |
+| Enstore | `enstore://username:password/optional/prefix?endpoint=https%3A%2F%2Fexample.com%2Fenstore` |
+
+<Note>
+  Backend packages are optional peer dependencies. Install only the packages needed by your chosen backend.
+</Note>
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Install nafs and write your first file.
+  </Card>
+  <Card title="Compatibility" icon="table" href="/reference/compatibility">
+    Compare the currently implemented APIs by backend.
+  </Card>
+</CardGroup>

@@ -63,5 +63,7 @@ nafs.js
 
 types
 
-docs
+# Generated documentation and Mintlify local preview cache
+.typedoc
+.mintlify
 .vscode

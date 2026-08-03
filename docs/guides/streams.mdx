@@ -1,0 +1,53 @@
+---
+title: "Streams"
+description: "Read and write data with Node.js streams across nafs backends."
+---
+
+Backends expose `createReadStream` and `createWriteStream` where listed in the [compatibility table](/reference/compatibility).
+
+## Write a stream
+
+```ts
+import { nafs } from 'nafs'
+import { pipeline } from 'node:stream/promises'
+import { Readable } from 'node:stream'
+
+const fs = await nafs('s3://my-bucket/exports')
+
+await pipeline(
+  Readable.from(['first line\n', 'second line\n']),
+  fs.createWriteStream('/report.txt')
+)
+```
+
+The S3 backend uses multipart uploads and buffers data until it can upload a part. The final part can be smaller than S3's multipart minimum.
+
+## Read a stream
+
+```ts
+import { createWriteStream } from 'node:fs'
+import { pipeline } from 'node:stream/promises'
+
+const fs = await nafs('s3://my-bucket/exports')
+
+await pipeline(
+  fs.createReadStream('/report.txt'),
+  createWriteStream('/tmp/report.txt')
+)
+```
+
+## Handle errors
+
+Prefer `pipeline()` so source and destination errors reject one promise and the streams are cleaned up together.
+
+```ts
+try {
+  await pipeline(source, fs.createWriteStream('/archive.bin'))
+} catch (error) {
+  console.error('Upload failed', error)
+}
+```
+
+<Note>
+  Aborting an S3 write stream attempts to abort the multipart upload.
+</Note>

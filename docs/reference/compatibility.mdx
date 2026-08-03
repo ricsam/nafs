@@ -1,0 +1,37 @@
+---
+title: "Compatibility"
+description: "Compare the currently supported file system operations by backend."
+---
+
+| Method | Local files | Memory | Amazon S3 | Enstore |
+| --- | :---: | :---: | :---: | :---: |
+| `promises.readFile` | Yes | Yes | Yes | Yes |
+| `promises.writeFile` | Yes | Yes | Yes | Yes |
+| `promises.mkdir` | Yes | Yes | No-op | No |
+| `promises.unlink` | Yes | Yes | No | No |
+| `promises.rmdir` | Yes | Yes | No | No |
+| `promises.readdir` | Yes | Yes | No | No |
+| `promises.stat` | Yes | Yes | No | No |
+| `promises.lstat` | Yes | Yes | No | No |
+| `promises.chmod` | Yes | Yes | No | No |
+| `promises.chown` | Yes | Yes | No | No |
+| `promises.utimes` | Yes | Yes | No | No |
+| `promises.rename` | Yes | Yes | No | No |
+| `promises.copyFile` | Yes | Yes | No | No |
+| `promises.symlink` | Yes | Yes | No | No |
+| `promises.readlink` | Yes | Yes | No | No |
+| `promises.truncate` | Yes | Yes | No | No |
+| `promises.access` | Yes | Yes | No | No |
+| `createReadStream` | Yes | Yes | Yes | Yes |
+| `createWriteStream` | Yes | Yes | Yes | Yes |
+
+<Note>
+  Local and memory implementations come from Node.js `fs`, `memfs`, and `@ricsam/linkfs`, which provide broader API coverage than the methods listed here.
+</Note>
+
+## Behavioral differences
+
+- S3 paths represent object keys, not real directories.
+- S3 `mkdir` resolves without creating an object.
+- Remote backends can surface network, authentication, and service errors that local file systems do not.
+- In-memory contents are isolated per instance and are never persisted.

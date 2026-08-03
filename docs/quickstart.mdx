@@ -1,0 +1,88 @@
+---
+title: "Quickstart"
+description: "Install nafs, select a backend, and use the familiar Node.js fs API."
+---
+
+## Install
+
+Install `nafs` and the optional peer dependencies for the backends you plan to use.
+
+<Tabs>
+  <Tab title="npm">
+    ```bash
+    npm install nafs
+    ```
+  </Tab>
+  <Tab title="pnpm">
+    ```bash
+    pnpm add nafs
+    ```
+  </Tab>
+  <Tab title="Bun">
+    ```bash
+    bun add nafs
+    ```
+  </Tab>
+</Tabs>
+
+For local or in-memory storage, also install `memfs` and `@ricsam/linkfs`:
+
+```bash
+npm install memfs @ricsam/linkfs
+```
+
+For S3, install the AWS SDK client:
+
+```bash
+npm install @aws-sdk/client-s3
+```
+
+For Enstore, install its file system package:
+
+```bash
+npm install @enstore/fs
+```
+
+## Create a file system
+
+The `nafs` function is asynchronous because backend implementations are loaded on demand.
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs(':memory:')
+```
+
+## Read and write files
+
+```ts
+await fs.promises.writeFile('/notes.txt', 'Ship the docs')
+
+const contents = await fs.promises.readFile('/notes.txt', 'utf8')
+console.log(contents) // Ship the docs
+```
+
+Use the same application-level calls after changing the URI:
+
+```ts
+const localFs = await nafs('file:///tmp/my-app')
+const s3Fs = await nafs('s3://my-bucket/my-app')
+
+await localFs.promises.writeFile('/settings.json', '{}')
+await s3Fs.promises.writeFile('/settings.json', '{}')
+```
+
+<Warning>
+  Supported methods vary by backend. Check the [compatibility table](/reference/compatibility) before relying on an operation with remote storage.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Configure S3" icon="cloud" href="/guides/amazon-s3">
+    Learn the URI formats, credential resolution, and custom endpoint options.
+  </Card>
+  <Card title="API reference" icon="code" href="/reference/nafs">
+    Review the `nafs` function and return types.
+  </Card>
+</CardGroup>

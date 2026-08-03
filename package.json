@@ -16,7 +16,9 @@
     "start": "bun run src/index.ts",
     "test": "bun test",
     "build": "rm -rf ./dist ./types && tsc -p tsconfig.build.json && swc ./src --config-file .swcrc.cjs.json --out-dir ./dist/cjs --ignore **/*.test.ts --strip-leading-paths && swc ./src --config-file .swcrc.mjs.json --out-dir ./dist/mjs --ignore **/*.test.ts --strip-leading-paths && ./patch-dist-dirs.sh",
-    "docs": "typedoc src/index.ts",
+    "docs": "cd docs && mint dev",
+    "docs:check": "cd docs && mint validate && mint broken-links",
+    "docs:api": "typedoc src/index.ts --out .typedoc",
     "typecheck": "tsc --noEmit"
   },
   "publishConfig": {

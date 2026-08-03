@@ -1,0 +1,43 @@
+---
+title: "Local files"
+description: "Scope the Node.js file system to a local directory with a file URI."
+---
+
+Use a `file://` URI to create a file system rooted at a directory. Internally, nafs uses [`@ricsam/linkfs`](https://github.com/ricsam/linkfs) to map the virtual root (`/`) to that directory.
+
+## Install dependencies
+
+```bash
+npm install nafs memfs @ricsam/linkfs
+```
+
+## Absolute paths
+
+```ts
+import { nafs } from 'nafs'
+
+const fs = await nafs('file:///var/lib/my-app')
+
+await fs.promises.writeFile('/state.json', '{"ready":true}')
+```
+
+The write above targets `/var/lib/my-app/state.json` on the host file system.
+
+## Relative paths
+
+A relative path is resolved against `process.cwd()`.
+
+```ts
+const fs = await nafs('file://data/uploads')
+await fs.promises.writeFile('/report.txt', 'complete')
+```
+
+If the process runs from `/srv/app`, the target is `/srv/app/data/uploads/report.txt`.
+
+<Warning>
+  The root directory is not created automatically. Create it before writing files, or call `fs.promises.mkdir()` for the mapped path as appropriate for your application.
+</Warning>
+
+## Node.js compatibility
+
+The local backend exposes the standard Node.js `fs` interface through the linked root, including callback, promise, synchronous, and stream APIs supplied by Node and linkfs.
